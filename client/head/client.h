@@ -143,10 +143,6 @@ void client_ss(const struct TinySystem *sys);
 // 解析命令
 void start();
 
-
-void SetColor(UINT uFore,UINT uBack);
-
-
 // 终端颜色控制
 #ifdef _WIN32
 
