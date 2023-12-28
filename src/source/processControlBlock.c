@@ -6,10 +6,6 @@ void initPCB(struct ProcessControlBlock *pcb)
     assert(pcb != NULL);
     pcb->pid = MAX_PID;
     pcb->status = Undefined;
-    if(pcb->page_table != NULL)
-    {
-        destroyPageTable(&(pcb->page_table));
-    }
 }
 
 // 创建一个PCB
@@ -30,7 +26,6 @@ void destroyPCB(struct ProcessControlBlock **pcb)
     if((*pcb)->page_table != NULL)
     {
         destroyPageTable(&((*pcb)->page_table));
-        // (*pcb)->page_table = NULL;
     }
     (*pcb)->pid = 0;
     (*pcb)->status = Undefined;

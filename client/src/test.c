@@ -16,7 +16,7 @@ static int main_ret = 0;
 static int test_count = 0;
 static int test_pass = 0;
 
-// #define MEMORY_NOT_ORDER // 控制页面分配释放错开
+
 
 #define EXPECT_EQ_BASE(equality, expect, actual, format)                                                           \
     do                                                                                                             \
@@ -31,7 +31,7 @@ static int test_pass = 0;
         }                                                                                                          \
     } while (0)
 
-#define EXPECT_EQ_UINT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%llu")
+#define EXPECT_EQ_UINT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%lu")
 #define EXPECT_TRUE(actual) EXPECT_EQ_BASE((actual) != TYPE_FALSE, "true", "false", "%s")
 #define EXPECT_FALSE(actual) EXPECT_EQ_BASE((actual) == TYPE_FALSE, "false", "true", "%s")
 
@@ -63,7 +63,7 @@ int main()
     testFileRW();
     testClient();
     testUI();
-    // testStart();
+    //// testStart();
     printf("%d/%d (%3.2f%%) passed\n", test_pass, test_count, test_pass * 100.0 / test_count);
     return 0;
 }
@@ -148,11 +148,7 @@ void testPCB()
 
 void testMemory()
 {
-#ifdef MEMORY_NOT_ORDER // 乱序插入队列
-#define ORDER_MODE TYPE_FALSE
-#else
-#define ORDER_MODE TYPE_TRUE
-#endif
+
     printf("|*********************************|\n");
     printf("|*****    test Memory       ******|\n");
     printf("|******   please wait...   *******|\n");
@@ -325,6 +321,7 @@ void testShow()
 
 void testFileRW()
 {
+    printf("**************testFileRW************************\n");
     const char *fileName = "F:\\project\\PageMemoryManagement\\procImage\\procTest";
     struct TinySystem *sys = creatSystem(ORDER_MODE);
     struct Process *procB = creatProcess(sys);
@@ -352,6 +349,7 @@ void testFileRW()
 
 void testClient()
 {
+    printf("**************testClient************************\n");
     struct TinySystem *sys = client_initSystem(ORDER_MODE);
     struct Process **procList = malloc(sizeof(struct Process *) * MAX_PID);
     char **procNameList = malloc(sizeof(char *) * MAX_PID);
@@ -393,16 +391,36 @@ void testUI()
     client_showMenu(NULL);
     client_help();
     client_sp((const struct Process **)procList,3);
-    client_cp(sys,procList,32*_KB);
+    client_cp(sys,procList,4*1024*_KB);
     client_ls((const struct Process **)procList);
     client_sp((const struct Process **)procList,0);
     client_pa(procList,0,4*_KB);
     client_sp((const struct Process **)procList,1);
     client_cp(sys,procList,4*_KB);
     client_sp((const struct Process **)procList,1);
-    client_sd(procList,1, "procTest");
+    const char *name = "procTest";
+    client_sd(procList,1, name);
+    client_ld(sys,procList,name);
+    client_cp(sys,procList,4*1024*_KB);
+    client_cp(sys,procList,4*1024*_KB);
+    client_cp(sys,procList,4*1024*_KB);
+    client_cp(sys,procList,4*1024*_KB);
+    client_cp(sys,procList,4*1024*_KB);
+    client_cp(sys,procList,4*1024*_KB);
+    client_cp(sys,procList,4*1024*_KB);
+    client_pa(procList,0,4*_KB);
     client_ss((const struct TinySystem *)sys);
     client_dp(procList,1);
+    client_dp(procList,1);
+    for(base_type i = 0; i < MAX_PID; ++i)
+    {
+        client_cp(sys,procList,4*_KB);
+    }
+    client_dp(procList,5);
+    client_dp(procList,10);
+    client_dp(procList,19);
+    client_dp(procList,20);
+    client_dp(procList,21);
     client_exit(&sys,procList);
 }
 

@@ -25,11 +25,9 @@ typedef uint32_t address_type;  // 定义地址类型
 #define _KB (1 * 1024)
 #define _MB (1 * 1024 * 1024)
 
-
+// 取最大，最小值
 address_type MAX(address_type left, address_type right);
-
 address_type MIN(address_type left, address_type right);
-
 
 
 #endif // PAGE_MEMORY_MANAGEMENT_HEAD

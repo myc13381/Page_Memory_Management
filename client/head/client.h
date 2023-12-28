@@ -1,5 +1,5 @@
 /*
- * 包含输出进程相关信息的函数,以及命令输入实现，颜色控制
+ * 包含输出进程和系统相关信息的函数,以及命令输入实现，颜色控制
 */
 
 #ifndef PAGE_MEMORY_MANAGEMENT_SHOW
@@ -28,6 +28,13 @@
 
 #endif
 
+// #define MEMORY_NOT_ORDER // 控制页面分配释放错开
+
+#ifdef MEMORY_NOT_ORDER // 乱序插入队列
+#define ORDER_MODE TYPE_FALSE
+#else
+#define ORDER_MODE TYPE_TRUE
+#endif
 
 /*********************************************************************
  * 进程基本信息输出
@@ -96,7 +103,7 @@ base_type client_loadProcFromDisk(struct TinySystem *sys, struct Process **procL
  * 命令列表：command (args) (...)
  * help                     get help                        --获取帮助信息
  * exit                     shutdown system                 --关闭系统退出程序
- * cp (name) (size:KB)      creat process                   --创建进程
+ * cp (size:KB)             creat process                   --创建进程
  * dp (pid)                 destroy process                 --销毁进程
  * pa (pid) (size:KB)       process allocate memory         --进程开辟内存
  * sd (pid)                 store process to disk           --将进程存入磁盘

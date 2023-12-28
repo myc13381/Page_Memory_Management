@@ -28,7 +28,7 @@
 #define PAGE_NOT_USED 0xFFFF // 物理页号最大为8192，这里使用0xFFFF作为标志，代表次页内存以释放
 
 
-
+// 页表
 struct PageTable
 {
     base_type *table; /* 0--65535 指向页表实体的指针 */

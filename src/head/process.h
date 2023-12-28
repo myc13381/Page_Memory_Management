@@ -43,6 +43,7 @@ void setProcPCB(struct Process *proc, struct ProcessControlBlock *pcb);
 address_type procAllocate(struct Process *proc, address_type size);
 
 // 进程释放内存
+// 设计未完成，不要调用该函数
 void procDeallocate(struct Process *proc, address_type addr, address_type size);
 
 // 获取进程PCB

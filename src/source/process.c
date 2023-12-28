@@ -78,14 +78,16 @@ address_type procAllocate(struct Process *proc, address_type size)
 {
     assert(proc != NULL);
     assert(size <= (MAX_SIZE_OF_PROGRAM - proc->size));
-     address_type addr = 0;
+    address_type addr = 0;
+    address_type free = proc->pcb->page_table->size * SIZE_OF_PAGE - proc->size;
+    address_type need = size - free;
     // 判断是否需要向主存申请内存, 如果页中有空闲空间，则不申请
-    if((proc->pcb->page_table->size * SIZE_OF_PAGE) - proc->size < size)
+    if(need > 0)
     {
         // 向主存申请内存,并在PCB中记录
-        addr = mem_allocate_user(sys_getMemory(proc->sys), proc->pcb, byte2Page(size));
+        addr = mem_allocate_user(sys_getMemory(proc->sys), proc->pcb, byte2Page(need));
     }
-    else addr = proc->size;
+    addr = proc->size;
     // 更新proc->size
     proc->size += size;
     return addr;
@@ -95,6 +97,7 @@ address_type procAllocate(struct Process *proc, address_type size)
 // 由于设计比较简单，对于Page类没有额外设计
 // 所以这里释放 [addr, addr + size]的内存是将对应的页面全部释放
 // size 的单位 byte
+// 设计未完成，不要调用该函数
 void procDeallocate(struct Process *proc, address_type addr, address_type size)
 {
     assert(proc != NULL);

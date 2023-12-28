@@ -12,8 +12,7 @@ void showProcPageTable(const struct Process *proc)
 {
     assert(proc != NULL);
     struct PageTable *pt = proc->pcb->page_table;
-    // printf("show message of pid=%llu process pagetable\n", proc->pcb->pid);
-    printf("capacity of a pagetable is 1024, the used number of elem is %llu\n", pt->size);
+    printf("capacity of a pagetable is 1024, the used number of elem is %u\n", pt->size);
     printf("logic Page numbers\t---->\treal Page numbers\n");
     // 程序大小为0，页表为空
     if (proc->size == 0)
@@ -29,16 +28,16 @@ void showProcPageTable(const struct Process *proc)
         else
         {
             if (start == end)
-                printf("%llu\t\t\t---->\t%llu\n", i - 1, end);
+                printf("%u\t\t\t---->\t%u\n", i - 1, end);
             else
-                printf("%llu--%llu\t\t\t---->\t%llu--%llu\n", i - (end - start) - 1, i - 1, start, end);
+                printf("%u--%u\t\t\t---->\t%u--%u\n", i - (end - start) - 1, i - 1, start, end);
             start = end = temp;
         }
     }
     if (start == end)
-        printf("%llu\t\t\t---->\t%llu\n", pt->size - 1, end);
+        printf("%u\t\t\t---->\t%u\n", pt->size - 1, end);
     else
-        printf("%llu--%llu\t\t\t---->\t%llu--%llu\n", pt->size - (end - start) - 1, pt->size - 1, start, end);
+        printf("%u--%u\t\t\t---->\t%u--%u\n", pt->size - (end - start) - 1, pt->size - 1, start, end);
 }
 
 // 输出进程的PCB信息
@@ -47,7 +46,6 @@ void showProcPCB(const struct Process *proc)
     assert(proc != NULL);
     struct ProcessControlBlock *pcb = proc->pcb;
     // printf("show message of process's PCB\n");
-    // printf("pid is %llu\n", pcb->pid);
     printf("CPU status is %s\n", cpu_status[proc->pcb->status]);
     showProcPageTable(proc);
 }
@@ -109,7 +107,7 @@ void client_showProcessList(const struct Process **procList, char **message)
         {
             if (procList[i] != NULL && procList[i]->pcb->pid != MAX_PID)
             {
-                printf("process\tpid:%llu\tsize:%llu\n", procList[i]->pcb->pid, procList[i]->size);
+                printf("process\tpid:%u\tsize:%llu\n", procList[i]->pcb->pid, procList[i]->size);
                 ++count;
             }
         }
@@ -124,7 +122,7 @@ void client_showProcessList(const struct Process **procList, char **message)
         {
             if (procList[i] != NULL && procList[i]->pcb->pid != MAX_PID)
             {
-                sprintf(temp, "process pid:%llu\n", procList[i]->pcb->pid);
+                sprintf(temp, "process pid:%u\n", procList[i]->pcb->pid);
                 strcat(*message, temp);
                 *temp = 0;
             }
@@ -180,7 +178,7 @@ base_type client_creatProcess(struct TinySystem *sys, struct Process **procList,
         {
             procList[i] = creatProcess(sys);
             loadProgram(procList[i], size);
-            return i;
+            return procList[i]->pcb->pid;
         }
     }
     return MAX_PID;
@@ -253,7 +251,7 @@ void client_help()
     printf("* command   (args)      (...)\n");
     printf("* help                                  get help\n");
     printf("* exit                                  shutdown system\n");
-    printf("* cp        (name)      (size:KB)       creat process\n");
+    printf("* cp        (size:KB)                   creat process\n");
     printf("* dp        (pid)                       destroy process\n");
     printf("* pa        (pid)       (size:KB)       process allocate memory\n");
     printf("* sd        (pid)                       store process to disk\n");
@@ -276,9 +274,8 @@ void client_exit(struct TinySystem **sys, struct Process **procList)
         {
             client_destroyProcess(procList, i);
         }
-        // if (procNameList[i] != NULL)
-        //     free(procNameList[i]);
     }
+    printf("destroy all process!\n");
     free(procList);
     // 关闭系统
     client_shutdownSystem(sys);
@@ -296,11 +293,16 @@ void client_cp(struct TinySystem *sys, struct Process **procList, address_type s
         printf("creat new process failed! number of size is unvalid!\n");
         return;
     }
+    address_type free = (MEMORY_CAPACITY - USER_ADDR_OFFSET - (sys->mem->user_used));
+
+    if ((MEMORY_CAPACITY - USER_ADDR_OFFSET - (sys->mem->user_used)) <= size)
+    {
+        printf("creat new process failed! memory space is not enough!\n");
+        return;
+    }
     base_type pid = client_creatProcess(sys, procList, size);
     if (pid == MAX_PID)
         printf("creat new process failed! number of processes is full!\n");
-    else if ((MEMORY_CAPACITY - USER_ADDR_OFFSET - procList[pid]->sys->mem->user_used) < size)
-        printf("creat new process failed! memory space is not enough!\n");
     else
     {
         SET_MESSAGE_COLOR;
@@ -316,15 +318,28 @@ void client_dp(struct Process **procList, base_type pid)
     assert(procList != NULL);
     SET_ERROR_COLOR;
     if (pid >= MAX_PID)
+    {
         printf("destroy process failed! pid is unvalid!\n");
-    if (procList[pid] == NULL)
+        return;
+    }
+    base_type i = 0;
+    for (i = 0; i < MAX_PID; ++i)
+    {
+        if (procList[i] != NULL && procList[i]->pcb->pid == pid)
+        {
+            break;
+        }
+    }
+    if (i == MAX_PID)
+    {
         printf("destroy process failed! process is not exist!\n");
-    else
+    }
+    else 
     {
         SET_MESSAGE_COLOR;
-        client_destroyProcess(&(procList[pid]), pid);
+        client_destroyProcess(procList, i);
         procList[pid] = NULL;
-        printf("destroy process success! pid is %llu\n", pid);
+        printf("destroy process success! pid is %u\n", pid);
     }
     SET_DEFAULT_COLOR;
     return;
@@ -338,10 +353,16 @@ void client_pa(struct Process **procList, base_type pid, address_type size)
     if (pid >= MAX_PID)
     {
         printf("process allocate failed! pid is unvalid\n");
+        return;
     }
     if (size == 0 || size > MAX_SIZE_OF_PROGRAM)
     {
         printf("process allocate failed! number of size is unvalid!\n");
+        return;
+    }
+    if ((MEMORY_CAPACITY - USER_ADDR_OFFSET - (procList[pid]->sys->mem->user_used)) <= size)
+    {
+        printf("process allocate failed! memory space is not enough!\n");
         return;
     }
     if (procList[pid] == NULL)
@@ -350,7 +371,7 @@ void client_pa(struct Process **procList, base_type pid, address_type size)
     }
     else if ((MAX_SIZE_OF_PROGRAM - (procList[pid]->size)) <= size)
     {
-        printf("process allocate failed! process space is not enough!\n");
+        printf("process allocate failed! memory space is not enough!\n");
     }
     else if ((MEMORY_CAPACITY - USER_ADDR_OFFSET - procList[pid]->sys->mem->user_used) < size)
     {
@@ -399,7 +420,7 @@ void client_sd(struct Process **procList, base_type pid, const char *fileName)
     else
     {
         SET_MESSAGE_COLOR;
-        printf("store process to disk success! pid is %llu\n", pid);
+        printf("store process to disk success! pid is %u\n", pid);
     }
     SET_DEFAULT_COLOR;
     return;
@@ -425,6 +446,20 @@ void client_ld(struct TinySystem *sys, struct Process **procList, const char *fi
     {
         SET_MESSAGE_COLOR;
         printf("load process from disk success! pid is %llu\n", pid);
+
+        // 通过输出验证读入内容是否正确
+        int len = 26 * 2; //a->z输出两变
+        const char *mem = procGetMemoryHandle(procList[pid], 0);
+        char buff[BUFF_SIZE];
+        memmove(buff,mem,26*2);
+        buff[len] = 0;
+        printf("%s\n",buff);
+        for(base_type i = 0; i < len; ++i)
+        {
+            if(buff[i] != 'a' + i%26)
+                SET_ERROR_COLOR;
+                printf("load program error!\n");
+        }
     }
     SET_DEFAULT_COLOR;
     return;
@@ -438,7 +473,7 @@ void client_sp(const struct Process **procList, base_type pid)
     if (pid >= MAX_PID)
         printf("pid is unvalid!\n");
     else if (procList[pid] == NULL)
-        printf("process is not exist! input pid is %llu\n", pid);
+        printf("process is not exist! input pid is %u\n", pid);
     else
     {
         SET_MESSAGE_COLOR;
@@ -511,14 +546,14 @@ void start()
         }
         else if (strcmp(command, "dp") == 0)
         {
-            scanf("%llu", &pid);
+            scanf("%u", &pid);
             fgets(buff, BUFF_SIZE, stdin);
             SET_MESSAGE_COLOR;
             client_dp(procList, pid);
         }
         else if (strcmp(command, "pa") == 0)
         {
-            scanf("%llu%llu", &pid, &size);
+            scanf("%u%llu", &pid, &size);
             fgets(buff, BUFF_SIZE, stdin);
             SET_MESSAGE_COLOR;
             client_pa(procList, pid, (address_type)(size * _KB));
