@@ -31,7 +31,7 @@ static int test_pass = 0;
         }                                                                                                          \
     } while (0)
 
-#define EXPECT_EQ_UINT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%u")
+#define EXPECT_EQ_UINT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%llu")
 #define EXPECT_TRUE(actual) EXPECT_EQ_BASE((actual) != TYPE_FALSE, "true", "false", "%s")
 #define EXPECT_FALSE(actual) EXPECT_EQ_BASE((actual) == TYPE_FALSE, "false", "true", "%s")
 
