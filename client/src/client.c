@@ -367,9 +367,9 @@ void client_pa(struct Process **procList, base_type pid, address_type size)
 }
 
 // sd store process to disk
-void client_sd(struct Process **procList, base_type pid)
+void client_sd(struct Process **procList, base_type pid, const char *fileName)
 {
-    assert(procList != NULL);
+    assert(procList != NULL && fileName != NULL);
     SET_ERROR_COLOR;
     if (pid >= MAX_PID)
     {
@@ -389,11 +389,11 @@ void client_sd(struct Process **procList, base_type pid)
         *(mem + i) = (char)('a' + (i % 26));
     }
 
-    char *file = malloc(sizeof(char) * BUFF_SIZE);
-    memcpy(file, PATH, BUFF_SIZE);
-    sprintf(file, "%sproc%u", file, pid);
-    bool_type ret = client_storeProc2Disk(procList, pid, file);
-    free(file);
+    char *path = malloc(sizeof(char) * BUFF_SIZE);
+    memcpy(path, PATH, BUFF_SIZE);
+    sprintf(path, "%s%s", path, fileName);
+    bool_type ret = client_storeProc2Disk(procList, pid, path);
+    free(path);
     if (ret == TYPE_FALSE)
         printf("store process to disk failed!\n");
     else
@@ -476,13 +476,12 @@ void start()
     struct TinySystem *sys = client_initSystem(TYPE_TRUE);
     struct Process **procList = NULL;
     client_init(&procList);
-
     // 解析命令
     char *command = malloc(sizeof(char) * NAME_LEN);
     char *fileName = malloc(sizeof(char) * NAME_LEN);
     char *procName = malloc(sizeof(char) * NAME_LEN);
     char *buff = malloc(sizeof(char) * BUFF_SIZE);
-    int pid = MAX_PID; //
+    int pid = MAX_PID;
     long long size = 0;
     system("cls");
     for (;;)
@@ -526,10 +525,10 @@ void start()
         }
         else if (strcmp(command, "sd") == 0)
         {
-            scanf("%u", &pid);
+            scanf("%u%s", &pid, fileName);
             fgets(buff, BUFF_SIZE, stdin);
             SET_MESSAGE_COLOR;
-            client_sd(procList, pid);
+            client_sd(procList, pid, fileName);
         }
         else if (strcmp(command, "ld") == 0)
         {

@@ -19,10 +19,10 @@ struct QueueLite* creatQueue(base_type size)
     assert(q != NULL);
     q->ptr = (base_type *)malloc(size * sizeof(base_type));
     assert(q->ptr != NULL);
-
     q->head = q->tail = 0;
     q->size = 0;
     q->capacity = size;
+    return q;
 }
 
 // 销毁一个队列

@@ -126,7 +126,7 @@ void client_dp(struct Process **procList, base_type pid);
 void client_pa(struct Process **procList, base_type pid, address_type size);
 
 // sd store process to disk
-void client_sd(struct Process **procList, base_type pid);
+void client_sd(struct Process **procList, base_type pid, const char *fileName);
 
 // ld load program from disk
 void client_ld(struct TinySystem *sys, struct Process **procList, const char *fileName);

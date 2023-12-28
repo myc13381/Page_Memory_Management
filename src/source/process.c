@@ -143,6 +143,7 @@ address_type getRealAddr(const struct Process *proc, address_type logicAddr)
     numberOfPage = getValueInPageTable(proc->pcb->page_table, (numberOfPage));                  // 替换为物理页号
     assert(numberOfPage != PAGE_NOT_USED);                                                      // 如果该页号已回收，则终止
     address_type realAddr = (numberOfPage << 12) | offsetInsidPage;
+    return realAddr;
 }
 
 // 通过逻辑地址获取真实地址的指针

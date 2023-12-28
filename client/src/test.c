@@ -63,7 +63,7 @@ int main()
     testFileRW();
     testClient();
     testUI();
-    //testStart();
+    // testStart();
     printf("%d/%d (%3.2f%%) passed\n", test_pass, test_count, test_pass * 100.0 / test_count);
     return 0;
 }
@@ -400,7 +400,7 @@ void testUI()
     client_sp((const struct Process **)procList,1);
     client_cp(sys,procList,4*_KB);
     client_sp((const struct Process **)procList,1);
-    client_sd(procList,1);
+    client_sd(procList,1, "procTest");
     client_ss((const struct TinySystem *)sys);
     client_dp(procList,1);
     client_exit(&sys,procList);
