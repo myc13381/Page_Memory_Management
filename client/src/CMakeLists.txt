@@ -1,0 +1,6 @@
+include_directories(${PROJECT_SOURCE_DIR}/src/head)
+include_directories(${PROJECT_SOURCE_DIR}/client/head)
+set(test "test.c" "client.c" "main.c")
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
+add_executable(test ${test})
+target_link_libraries(test mlib)

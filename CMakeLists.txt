@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.5)
+project(Page_Mmeory_Management C)
+add_compile_options(-std=c11)
+add_subdirectory(${PROJECT_SOURCE_DIR}/client)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src)
