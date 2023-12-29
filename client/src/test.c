@@ -299,7 +299,7 @@ void testProcess()
 
 void testShow()
 {
-    printf("test Show\n");
+    printf("**************test Show**************\n");
     struct TinySystem *sys = creatSystem(ORDER_MODE);
     struct Process *procB = creatProcess(sys);
     struct Process *procC = creatProcess(sys);

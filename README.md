@@ -26,7 +26,7 @@ windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里
  * 命令列表：command (args) (...)
  * help                     get help                        --获取帮助信息
  * exit                     shutdown system                 --关闭系统退出程序
- * cp (size:KB)      		creat process                   --创建进程
+ * cp (size:KB)  			creat process                   --创建进程
  * dp (pid)                 destroy process                 --销毁进程
  * pa (pid) (size:KB)       process allocate memory         --进程开辟内存
  * sd (pid)                 store process to disk           --将进程存入磁盘
