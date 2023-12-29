@@ -24,16 +24,16 @@ windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里
 /*****************************************************************************
  * 命令行输入解析
  * 命令列表：command (args) (...)
- * help                     get help                        --获取帮助信息
+ * help						get help                        --获取帮助信息
  * exit						shutdown system                 --关闭系统退出程序
  * cp (size:KB)				creat process                   --创建进程
- * dp (pid)                 destroy process                 --销毁进程
- * pa (pid) (size:KB)       process allocate memory         --进程开辟内存
- * sd (pid)                 store process to disk           --将进程存入磁盘
- * ld (fileName)            load program from disk          --从磁盘载入程序
- * sp (pid)                 show process message            --显示进程具体信息
- * ls                       list all process                --显示所有进程
- * ss                       show system message             --显示当前系统信息
+ * dp (pid)					destroy process                 --销毁进程
+ * pa (pid) (size:KB)		process allocate memory         --进程开辟内存
+ * sd (pid)					store process to disk           --将进程存入磁盘
+ * ld (fileName)			load program from disk          --从磁盘载入程序
+ * sp (pid)					show process message            --显示进程具体信息
+ * ls						list all process                --显示所有进程
+ * ss						show system message             --显示当前系统信息
  * 例如: cp 4,创建一个进程，该进程初始大小4KB
 *******************************************************************************/
 ```
