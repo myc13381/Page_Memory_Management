@@ -224,7 +224,8 @@ base_type client_loadProcFromDisk(struct TinySystem *sys, struct Process **procL
         if (procList[i] == NULL)
         {
             procList[i] = readProcFromDisk(sys, fileName);
-            return i;
+            if(procList[i] == NULL) return MAX_PID; // 创建失败
+            else return i;
         }
     }
     return MAX_PID;
@@ -435,6 +436,7 @@ void client_ld(struct TinySystem *sys, struct Process **procList, const char *fi
     char *file = malloc(sizeof(char) * BUFF_SIZE);
     memcpy(file, PATH, BUFF_SIZE);
     sprintf(file, "%s%s", file, fileName);
+
     pid = client_loadProcFromDisk(sys, procList, file);
     free(file);
     SET_ERROR_COLOR;
@@ -457,8 +459,11 @@ void client_ld(struct TinySystem *sys, struct Process **procList, const char *fi
         for(base_type i = 0; i < len; ++i)
         {
             if(buff[i] != 'a' + i%26)
+            {
                 SET_ERROR_COLOR;
                 printf("load program error!\n");
+                break;
+            }
         }
     }
     SET_DEFAULT_COLOR;

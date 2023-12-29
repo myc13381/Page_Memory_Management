@@ -185,7 +185,7 @@ struct Process *readProcFromDisk(struct TinySystem *sys, const char *fileName)
     FILE *fp = fopen(fileName, "rb");
     // 读取文件
     size_t size = fread(temp, sizeof(char), MAX_SIZE_OF_PROGRAM + 1, fp);
-    if(size > MAX_SIZE_OF_PROGRAM) return NULL; // 文件太大，无法创建
+    if(size > MAX_SIZE_OF_PROGRAM || size > (MEMORY_CAPACITY - USER_ADDR_OFFSET - (sys->mem->user_used))) return NULL; // 文件太大，无法创建
     // 创建进程实体
     struct Process *proc = creatProcess(sys);
     loadProgram(proc,size); //申请len大小空间

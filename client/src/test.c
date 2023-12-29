@@ -399,7 +399,13 @@ void testUI()
     client_cp(sys,procList,4*_KB);
     client_sp((const struct Process **)procList,1);
     const char *name = "procTest";
-    client_sd(procList,1, name);
+    client_sd(procList,0, name);
+    client_ld(sys,procList,name);
+    client_ld(sys,procList,name);
+    client_ld(sys,procList,name);
+    client_ld(sys,procList,name);
+    client_ld(sys,procList,name);
+    client_ld(sys,procList,name);
     client_ld(sys,procList,name);
     client_cp(sys,procList,4*1024*_KB);
     client_cp(sys,procList,4*1024*_KB);
