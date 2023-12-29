@@ -16,7 +16,7 @@
 #define PART_OF_PAGE_NUMBER         0xFFFFF000  // 11111111111111111111000000000000
 #define PART_OF_PAGE_INSIDE_OFFSET  0x00000FFF  // 00000000000000000000111111111111
 
-
+// 进程模型
 struct Process
 {
     struct ProcessControlBlock *pcb; // 进程的PCB

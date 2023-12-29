@@ -10,7 +10,7 @@
 #include "queueLite.h"
 #include "processControlBlock.h"
 
-
+// 系统模型
 struct TinySystem
 {
     struct QueueLite *pidQueue;         // 空闲Pid队列

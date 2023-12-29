@@ -12,7 +12,7 @@
 
 typedef enum {Ready, Execute, Block, Undefined} CPU_STATUS; // Undefined表示未知
 
-
+// PCB
 struct ProcessControlBlock
 {
     base_type pid;                  // pid==MAX_PID 表示此PCB未被使用，否则代表进程编号

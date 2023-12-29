@@ -4,12 +4,15 @@
 
 环境：gcc	CMake 	Windows/Linux 	vscode
 
----
+本项目是本人操作系统的一个简单课设，在此记录
 
-#### 运行方法：
+<img src="./pic/题目.png" style="zoom: 80%;" />
+
+### 运行方法：
+
+windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里安装过MinGW)
 
 ```json
-// vscode项目中.vscode/settings.json文件中添加
 "cmake.generator": "MinGW Makefiles"
 ```
 
@@ -37,15 +40,15 @@
 
 在Windows平台下开为不同情况的输出设置了不同的颜色。
 
-
-
-#### 项目概述
+### 项目概述
 
 **{projectDir}/src**下主要是系统模型设计，包括页表(PageTable)，主存(Memory)，进程控制块(PCB)，进程(Process)，系统(TinySystem)，其中还设计了一个简易的队列数据结构(QueueLite)。
 
 **{projectDir}/client**下主要是展示页面的设计，包含一个简易的命令窗口，输出相关信息。
 
+系统总体框架
 
+<img src="./pic/系统架构.png" />
 
 #### head.h
 
@@ -67,6 +70,26 @@ typedef uint32_t address_type;  // 定义地址类型
 // 取最大，最小值
 address_type MAX(address_type left, address_type right);
 address_type MIN(address_type left, address_type right);
+```
+
+#### client.h
+
+接口界面实现
+
+#### QueueLite
+
+轻量级队列，用于内存分配回收，pid分配
+
+```c
+// 轻量级队列
+struct QueueLite
+{
+    base_type *ptr;     // 队列本体
+    base_type capacity; // 队列容量
+    base_type size;     // 队列长度
+    base_type head;     // 队列头部
+    base_type tail;     // 队列尾部
+};
 ```
 
 
@@ -140,7 +163,42 @@ struct PageTable
 };
 ```
 
-。。。
+#### PCB模型
+
+```c
+// PCB
+typedef enum {Ready, Execute, Block, Undefined} CPU_STATUS; // Undefined表示未知
+struct ProcessControlBlock
+{
+    base_type pid;                  // pid==MAX_PID 表示此PCB未被使用，否则代表进程编号
+    CPU_STATUS status;              // 处理机状态 就绪，执行，阻塞，未知
+    struct PageTable *page_table;   // 指向内存中页表的指针
+};
+```
+
+#### 进程模型
+
+```c
+// 进程模型
+struct Process
+{
+    struct ProcessControlBlock *pcb; // 进程的PCB
+    address_type size; // 进程的占用的内存总大小
+    struct TinySystem *sys; //系统，单例对象
+};
+```
+
+#### 系统模型
+
+```c
+// 系统模型
+struct TinySystem
+{
+    struct QueueLite *pidQueue;         // 空闲Pid队列
+    struct Memory *mem;                 // 主存储器实例
+    struct ProcessControlBlock **PCBs;  // PCB队列
+};
+```
 
 #### 分页算法
 
@@ -149,4 +207,13 @@ struct PageTable
 #### 回收算法
 
 回收比较简单，销毁进程时，直接将其拥有的页号全部加入队列即可。
+
+### 其他
+
+#### 不足之处
+
+1. 对于进程回收内存没有设计好，因此在命令行界面阉割了该功能。
+2. 没有考虑多进程并发，从设计结构看来，Memory和System都是单例对象多个进程同时申请资源时必然会冲突，因此需要加锁。同时由于客户端命令行界面执行也是单线程，如果考虑多线程模拟，进程列表`procList`也成为临界资源，使用需要加锁。
+
+
 

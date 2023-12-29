@@ -13,6 +13,7 @@
 
 #define QUEUE_CAPACITY 1024 * 16 // 队列的最大容量
 
+// 轻量级队列
 struct QueueLite
 {
     base_type *ptr;     // 队列本体
