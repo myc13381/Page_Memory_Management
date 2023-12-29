@@ -5,7 +5,7 @@
 #ifndef PAGE_MEMORY_MANAGEMENT_SHOW
 #define PAGE_MEMORY_MANAGEMENT_SHOW
 
-// #define UNIT_TEST
+
 
 #include "head.h"
 #include "process.h"
@@ -27,6 +27,8 @@
 #define SET_ERROR_COLOR   do{}while(0)
 
 #endif
+
+// #define UNIT_TEST //是否运行单元测试
 
 // #define MEMORY_NOT_ORDER // 控制页面分配释放错开
 
