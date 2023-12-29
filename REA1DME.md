@@ -25,8 +25,8 @@ windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里
  * 命令行输入解析
  * 命令列表：command (args) (...)
  * help                     get help                        --获取帮助信息
- * exit                     shutdown system                 --关闭系统退出程序
- * cp (size:KB)  			creat process                   --创建进程
+ * exit						shutdown system                 --关闭系统退出程序
+ * cp (size:KB)				creat process                   --创建进程
  * dp (pid)                 destroy process                 --销毁进程
  * pa (pid) (size:KB)       process allocate memory         --进程开辟内存
  * sd (pid)                 store process to disk           --将进程存入磁盘
@@ -57,11 +57,11 @@ windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里
 ```c
 typedef enum { TYPE_FALSE, TYPE_TRUE } bool_type; // bool 类型
 
-typedef uint16_t base_type; // 定义数量类型，例如页表项的数量，队列的长度
-typedef uint32_t address_type;  // 定义地址类型
+typedef uint16_t base_type; 		// 定义数量类型，例如页表项的数量，队列的长度
+typedef uint32_t address_type;  	// 定义地址类型
 
-#define SIZE_OF_PAGE 4 * 1024 // Page的大小
-#define MAX_PID 20 // 进程的最大数量
+#define SIZE_OF_PAGE 4 * 1024 		// Page的大小
+#define MAX_PID 20 					// 进程的最大数量
 
 // 定义单位方便测试 (Unit:byte)
 #define _KB (1 * 1024)
@@ -96,7 +96,7 @@ struct QueueLite
 
 #### 主存模型
 
-模拟的主存大小为32MB，其中系统占用8MB空间，剩下的24MB是用户区，用来运行进程，分页大小为4KB每页。这里只对用户区空间进行分页，系统区不考虑。规定每个进程最大内存为4MB，因此只需要一级页表。
+模拟的主存大小为32MB，使用malloc开辟对应大小内存，其中系统占用8MB空间，剩下的24MB是用户区，用来运行进程，分页大小为4KB每页。这里只对用户区空间进行分页，系统区不考虑。规定每个进程最大内存为4MB，因此只需要一级页表。
 
 ```c
 /********************************************************************************
@@ -182,9 +182,9 @@ struct ProcessControlBlock
 // 进程模型
 struct Process
 {
-    struct ProcessControlBlock *pcb; // 进程的PCB
-    address_type size; // 进程的占用的内存总大小
-    struct TinySystem *sys; //系统，单例对象
+    struct ProcessControlBlock *pcb; 	// 进程的PCB
+    address_type size; 					// 进程的占用的内存总大小
+    struct TinySystem *sys; 			//系统，单例对象
 };
 ```
 
@@ -202,7 +202,7 @@ struct TinySystem
 
 #### 分页算法
 
-每4KB大小为一页，因此用户区共有24MB/4KB=6K个页面。对于页面分配这里设计了两种方案，一是在系统初始化时按从0到6K的顺序依次将序号插入队列；二是将所有页面分为四组，分组的规则是页序号对{1,2,3,4}取余为0的为一组，依次插入各组，所以顺序是0,4,8....1,5,9...2,6,10...3,7,11......进程申请内存时从队列头获取页面序号并分配。**这里修改两种方法需要在client.h文件中进行宏(MEMORY_NOT_ORDER)的定义**当进程申请内存时，从系统来看分配的单位是页，从进程来看分配的单位是字节。例如一个进程第一次申请了5KB内存，则系统分配给他2页(8K)，当该进程下次请求2KB内存时，则系统不会再分配一页而是使用已有的页面。
+每4KB大小为一页，因此用户区共有24MB/4KB=6K个页面。对于页面分配这里设计了两种方案，一是在系统初始化时按从0到6K的顺序依次将序号插入队列；二是将所有页面分为四组，分组的规则是页序号对{1,2,3,4}取余为0的为一组，依次插入各组，所以顺序是0,4,8....1,5,9...2,6,10...3,7,11......。进程申请内存时从队列头获取页面序号并分配。**这里修改两种方法需要在client.h文件中进行宏(MEMORY_NOT_ORDER)的定义**，当进程申请内存时，从系统来看分配的单位是页，从进程来看分配的单位是字节。例如一个进程第一次申请了5KB内存，则系统分配给他2页(8K)，当该进程下次请求2KB内存时，则系统不会再分配一页而是使用已有的页面。
 
 #### 回收算法
 
