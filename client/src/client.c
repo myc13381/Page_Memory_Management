@@ -177,6 +177,7 @@ base_type client_creatProcess(struct TinySystem *sys, struct Process **procList,
         if (procList[i] == NULL)
         {
             procList[i] = creatProcess(sys);
+            if(procList[i] == NULL) return MAX_PID;
             loadProgram(procList[i], size);
             return procList[i]->pcb->pid;
         }
@@ -214,7 +215,7 @@ bool_type client_storeProc2Disk(struct Process **procList, base_type pid, const 
     return writeProc2Disk(procList[pid], fileName);
 }
 
-// 将某一进程载入进磁盘
+// 将某一进程载入
 base_type client_loadProcFromDisk(struct TinySystem *sys, struct Process **procList, const char *fileName)
 {
     assert(procList != NULL && fileName != NULL);
@@ -225,10 +226,11 @@ base_type client_loadProcFromDisk(struct TinySystem *sys, struct Process **procL
         {
             procList[i] = readProcFromDisk(sys, fileName);
             if(procList[i] == NULL) return MAX_PID; // 创建失败
-            else return i;
+            else return procList[i]->pcb->pid;
         }
     }
     return MAX_PID;
+
 }
 
 // 命令行解析操作，注意管理procList 和 procNameList
@@ -442,20 +444,24 @@ void client_ld(struct TinySystem *sys, struct Process **procList, const char *fi
     SET_ERROR_COLOR;
     if (pid == MAX_PID)
     {
-        printf("load process from disk failed!\n");
+        printf("load process from disk failed!\nPlease enter the correct file name or confirm that the file size is greater than 0 and less than 4M!\n");
     }
     else
     {
         SET_MESSAGE_COLOR;
-        printf("load process from disk success! pid is %llu\n", pid);
-
+        printf("load process from disk success! pid is %u\n", pid);
+        base_type i = 0;
+        for(;i < MAX_PID; ++i)
+        {
+            if(procList[i] != NULL && procList[i]->pcb->pid == pid)
+                break;
+        }
         // 通过输出验证读入内容是否正确
         int len = 26 * 2; //a->z输出两变
-        const char *mem = procGetMemoryHandle(procList[pid], 0);
+        const char *mem = procGetMemoryHandle(procList[i], 0);
         char buff[BUFF_SIZE];
         memmove(buff,mem,26*2);
         buff[len] = 0;
-        printf("%s\n",buff);
         for(base_type i = 0; i < len; ++i)
         {
             if(buff[i] != 'a' + i%26)
@@ -565,7 +571,7 @@ void start()
         }
         else if (strcmp(command, "sd") == 0)
         {
-            scanf("%llu%s", &pid, fileName);
+            scanf("%u%s", &pid, fileName);
             fgets(buff, BUFF_SIZE, stdin);
             SET_MESSAGE_COLOR;
             client_sd(procList, pid, fileName);

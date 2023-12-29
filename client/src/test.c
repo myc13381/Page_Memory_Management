@@ -398,7 +398,7 @@ void testUI()
     client_sp((const struct Process **)procList,1);
     client_cp(sys,procList,4*_KB);
     client_sp((const struct Process **)procList,1);
-    const char *name = "procTest";
+    const char *name = "procTestA";
     client_sd(procList,0, name);
     client_ld(sys,procList,name);
     client_ld(sys,procList,name);
@@ -427,6 +427,12 @@ void testUI()
     client_dp(procList,19);
     client_dp(procList,20);
     client_dp(procList,21);
+    name = "procTestB";
+    client_sd(procList,1,name);
+    for(base_type i = 0; i < MAX_PID; ++i)
+    {
+        client_ld(sys,procList,name);
+    }
     client_exit(&sys,procList);
 }
 

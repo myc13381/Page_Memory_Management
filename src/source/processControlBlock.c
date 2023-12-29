@@ -6,6 +6,9 @@ void initPCB(struct ProcessControlBlock *pcb)
     assert(pcb != NULL);
     pcb->pid = MAX_PID;
     pcb->status = Undefined;
+    //重建页表
+    destroyPageTable(&pcb->page_table);
+    pcb->page_table = creatPageTbale();
 }
 
 // 创建一个PCB

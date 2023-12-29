@@ -15,7 +15,7 @@ struct Process *creatProcess(struct TinySystem *sys)
     assert(sys != NULL);
     // 首先进行系统判断  获取进程pid
     base_type pid = sys_allocatePid(sys);
-    assert(pid != MAX_PID); // 无法创建新进程
+    if(pid == MAX_PID) return NULL;// 无法创建新进程
     // 创建进程实体
     struct Process *proc = (struct Process *)malloc(sizeof(struct Process));
     assert(proc != NULL);
@@ -140,7 +140,7 @@ address_type getRealAddr(const struct Process *proc, address_type logicAddr)
 {
     assert(proc != NULL);
     assert(logicAddr < proc->size);
-    address_type numberOfPage = ((logicAddr & (address_type)PART_OF_PAGE_NUMBER) >> 12);        // 逻辑页号
+    base_type numberOfPage = ((logicAddr & (address_type)PART_OF_PAGE_NUMBER) >> 12);        // 逻辑页号
     assert(numberOfPage < getPageTableSize(proc->pcb->page_table));
     address_type offsetInsidPage = logicAddr & PART_OF_PAGE_INSIDE_OFFSET;                      // 页内偏移
     numberOfPage = getValueInPageTable(proc->pcb->page_table, (numberOfPage));                  // 替换为物理页号
@@ -183,11 +183,19 @@ struct Process *readProcFromDisk(struct TinySystem *sys, const char *fileName)
     assert(temp != NULL);
     // 关联文件
     FILE *fp = fopen(fileName, "rb");
+    if(fp == NULL) return NULL;
     // 读取文件
     size_t size = fread(temp, sizeof(char), MAX_SIZE_OF_PROGRAM + 1, fp);
     if(size > MAX_SIZE_OF_PROGRAM || size > (MEMORY_CAPACITY - USER_ADDR_OFFSET - (sys->mem->user_used))) return NULL; // 文件太大，无法创建
+    fclose(fp);
     // 创建进程实体
     struct Process *proc = creatProcess(sys);
+    if(proc == NULL)
+    {
+        free(temp);
+        temp = NULL;
+        return NULL;
+    } 
     loadProgram(proc,size); //申请len大小空间
     // 复制内存
     char* source = temp;
@@ -200,6 +208,5 @@ struct Process *readProcFromDisk(struct TinySystem *sys, const char *fileName)
     }
     free(temp);
     temp = source = NULL;
-    fclose(fp);
     return proc;
 }
