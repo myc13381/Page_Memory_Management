@@ -15,7 +15,7 @@
 
 typedef enum { TYPE_FALSE, TYPE_TRUE } bool_type; // bool 类型
 
-typedef uint16_t base_type; // 定义数量类型，例如页表项的数量，栈的长度
+typedef uint16_t base_type; // 定义数量类型，例如页表项的数量，队列的长度
 typedef uint32_t address_type;  // 定义地址类型
 
 #define SIZE_OF_PAGE 4 * 1024 // Page的大小
