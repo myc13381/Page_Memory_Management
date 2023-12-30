@@ -1,11 +1,12 @@
 #include "client.h"
 #include <stdio.h>
+#include <io.h>
 
 #define BUFF_SIZE 512
 #define NAME_LEN 129 // 文件名最长128字节
 
 char *cpu_status[4] = {"Ready", "Execute", "Block", "Undefined"};
-char *PATH = "F:\\project\\PageMemoryManagement\\procImage\\";
+
 
 // 输出进程的页表
 void showProcPageTable(const struct Process *proc)
@@ -414,7 +415,8 @@ void client_sd(struct Process **procList, base_type pid, const char *fileName)
     }
 
     char *path = malloc(sizeof(char) * BUFF_SIZE);
-    memcpy(path, PATH, BUFF_SIZE);
+    getcwd(path,BUFF_SIZE);
+    strcat(path,"/../procImage/");
     sprintf(path, "%s%s", path, fileName);
     bool_type ret = client_storeProc2Disk(procList, pid, path);
     free(path);
@@ -436,9 +438,9 @@ void client_ld(struct TinySystem *sys, struct Process **procList, const char *fi
     base_type pid = MAX_PID;
     // 获取文件完整路径名
     char *file = malloc(sizeof(char) * BUFF_SIZE);
-    memcpy(file, PATH, BUFF_SIZE);
+    getcwd(file,BUFF_SIZE);
+    strcat(file,"/../procImage/");
     sprintf(file, "%s%s", file, fileName);
-
     pid = client_loadProcFromDisk(sys, procList, file);
     free(file);
     SET_ERROR_COLOR;

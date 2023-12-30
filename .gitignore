@@ -1,4 +1,5 @@
 bin
 build
 procImage/*
+!procImage/README.md
 .vscode/*

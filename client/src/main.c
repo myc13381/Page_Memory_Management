@@ -16,6 +16,9 @@
 
 int main()
 {
+    char *path = malloc(sizeof(char) * 512);
+    printf("%s\n",path);
+    free(path);
     start();
     return 0;
 }

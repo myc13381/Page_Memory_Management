@@ -18,6 +18,8 @@ windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里
 
 使用{projectDir}/client/head/client.h文件中的宏`UNIT_TEST`进行控制。如果定义该宏，则运行单元测试，如果未定义，则运行主程序。
 
+进程映像文件读取文件保存在{projectDir}/procImage/中，在相关函数中设置
+
 主程序是一个简单的命令行，通过输入命令执行目标操作，括号代表参数，冒号是单位，pid，size是整数类型且均大于零，fileName是字符串。
 
 ```c
