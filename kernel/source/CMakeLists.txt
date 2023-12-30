@@ -1,4 +1,4 @@
-include_directories(${PROJECT_SOURCE_DIR}/src/head)
+include_directories(${PROJECT_SOURCE_DIR}/kernel/head)
 # 设置库文件输出路径
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)

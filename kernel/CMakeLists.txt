@@ -1,1 +1,1 @@
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/source)
+add_subdirectory(${PROJECT_SOURCE_DIR}/kernel/source)
