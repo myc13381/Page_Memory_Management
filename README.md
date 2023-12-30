@@ -43,7 +43,7 @@ windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里
 
 ### 项目概述
 
-**{projectDir}/src**下主要是系统模型设计，包括页表(PageTable)，主存(Memory)，进程控制块(PCB)，进程(Process)，系统(TinySystem)，其中还设计了一个简易的队列数据结构(QueueLite)。
+**{projectDir}/kernel**下主要是系统模型设计，包括页表(PageTable)，主存(Memory)，进程控制块(PCB)，进程(Process)，系统(TinySystem)，其中还设计了一个简易的队列数据结构(QueueLite)。
 
 **{projectDir}/client**下主要是展示页面的设计，包含一个简易的命令窗口，输出相关信息。
 
