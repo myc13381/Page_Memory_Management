@@ -1,6 +1,5 @@
 #include "client.h"
-#include <stdio.h>
-#include <io.h>
+
 
 #define BUFF_SIZE 512
 #define NAME_LEN 129 // 文件名最长128字节
@@ -531,7 +530,11 @@ void start()
     char *buff = malloc(sizeof(char) * BUFF_SIZE);
     int pid = MAX_PID;
     long long size = 0;
+#ifdef _WIN32
     system("cls");
+#else
+    system("clear");
+#endif
     for (;;)
     {
         SET_DEFAULT_COLOR;

@@ -9,9 +9,11 @@
 
 #include "head.h"
 #include "process.h"
+#include <stdio.h>
+
 
 #ifdef _WIN32
-
+#include <io.h>
 #include <windows.h>
 #define SET_COMMAND_COLOR do{SetColor(0xE ,0);}while(0)
 #define SET_MESSAGE_COLOR do{SetColor(3, 0);}while(0)
@@ -19,7 +21,7 @@
 #define SET_ERROR_COLOR   do{SetColor(4, 0);}while(0)
 
 #else //Linux
-
+#include <sys/io.h>
 // linux 平台
 #define SET_COMMAND_COLOR do{}while(0)
 #define SET_MESSAGE_COLOR do{}while(0)
