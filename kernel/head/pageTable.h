@@ -31,9 +31,9 @@
 // 页表
 struct PageTable
 {
-    base_type *table; /* 0--65535 指向页表实体的指针 */
-    base_type size; /* 已使用的最大页表项数，页表项的个数最多1024 */
-    struct QueueLite *queue; // 存放未使用的页号
+    base_type *table;           /* 0--65535 指向页表实体的指针 */
+    base_type size;             /* 已使用的最大页表项数，页表项的个数最多1024 */
+    struct QueueLite *queue;    // 存放未使用的页号
 };
 
 // 建立一个页表

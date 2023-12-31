@@ -19,9 +19,9 @@
 // 进程模型
 struct Process
 {
-    struct ProcessControlBlock *pcb; // 进程的PCB
-    address_type size; // 进程的占用的内存总大小
-    struct TinySystem *sys; //系统，单例对象
+    struct ProcessControlBlock *pcb;            // 进程的PCB
+    address_type size;                          // 进程的占用的内存总大小
+    struct TinySystem *sys;                     //系统，单例对象
 };
 
 // 初始化进程

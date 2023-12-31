@@ -36,17 +36,17 @@
 
 #define MEMORY_CAPACITY         (32 * 1024 * 1024)              // 主存最大容量
 #define USER_ADDR_OFFSET        (8 * 1024 * 1024)               // 用户区偏移量 8M 
-#define NUM_OF_PAGE_FOR_USER    (6 * 1024)                      //主存中用户区页面的数量，系统区就不分页了
-#define START_PAGE_OF_USER      (2 * 1024)                      //用户区起始页号
+#define NUM_OF_PAGE_FOR_USER    (6 * 1024)                      // 主存中用户区页面的数量，系统区就不分页了
+#define START_PAGE_OF_USER      (2 * 1024)                      // 用户区起始页号
 
 /* Memory 代表主存，单例对象，用来描述主存*/
 struct Memory
 {
-    char *memory; // 主存
-    address_type offset; // 用户段的偏移量
-    address_type sys_used; //系统区已使用量
-    address_type user_used;// 用户区已使用量
-    struct QueueLite *mem_queue; //用于存放空闲的页的页号
+    char *memory;                                               // 主存
+    address_type offset;                                        // 用户段的偏移量
+    address_type sys_used;                                      // 系统区已使用量
+    address_type user_used;                                     // 用户区已使用量
+    struct QueueLite *mem_queue;                                // 用于存放空闲的页的页号
 };
 
 // 初始化主存，包括对主存进行分页操作 flag代表分页是否按顺序插入队列
