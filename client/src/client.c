@@ -445,7 +445,7 @@ void client_ld(struct TinySystem *sys, struct Process **procList, const char *fi
     SET_ERROR_COLOR;
     if (pid == MAX_PID)
     {
-        printf("load process from disk failed!\nPlease enter the correct file name or confirm that the file size is greater than 0 and less than 4M!\n");
+        printf("load process from disk failed!\n");
     }
     else
     {

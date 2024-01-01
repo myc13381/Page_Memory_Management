@@ -2,7 +2,7 @@
 
 > 操作系统分页系统模拟
 
-环境：gcc	CMake 	Windows/Linux 	vscode
+环境：编译器gcc	管理工具CMake	平台Windows/Linux 	编辑器VScode
 
 本项目是本人操作系统的一个简单课设，在此记录
 
@@ -10,36 +10,38 @@
 
 ### 运行方法：
 
-windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里安装过MinGW)
+1. 如果是windows平台下，vscode项目中.vscode/settings.json文件中添加(电脑里安装过MinGW)
 
-```json
-"cmake.generator": "MinGW Makefiles"
-```
+   ```json
+   "cmake.generator": "MinGW Makefiles"
+   ```
 
-使用{projectDir}/client/head/client.h文件中的宏`UNIT_TEST`进行控制。如果定义该宏，则运行单元测试，如果未定义，则运行主程序。
+2. 使用{projectDir}/client/head/client.h文件中的宏`UNIT_TEST`进行控制。如果定义该宏，则运行单元测试，如果未定义，则运行主程序。
 
-进程映像文件读取文件保存在{projectDir}/procImage/中，其实是可执行文件上级目录下的procImage文件夹中，在相关函数中设置
+3. 进程映像文件读取文件保存在{projectDir}/procImage/中，其实是可执行文件上级目录下的procImage文件夹中，在相关函数中设置
 
-主程序是一个简单的命令行，通过输入命令执行目标操作，括号代表参数，冒号是单位，pid，size是整数类型且均大于零，fileName是字符串。
+4. 主程序是一个简单的命令行，通过输入命令执行目标操作，括号代表参数，冒号是单位，pid，size是整数类型且均大于零，fileName是字符串。
 
-```c
-/*****************************************************************************
- * 命令行输入解析
- * 命令列表：command (args) (...)
- * help                     get help                        --获取帮助信息
- * exit                     shutdown system                 --关闭系统退出程序
- * cp (size:KB)             creat process                   --创建进程
- * dp (pid)                 destroy process                 --销毁进程
- * pa (pid) (size:KB)       process allocate memory         --进程开辟内存
- * sd (pid)                 store process to disk           --将进程存入磁盘
- * ld (fileName)            load program from disk          --从磁盘载入程序
- * sp (pid)                 show process message            --显示进程具体信息
- * ls                       list all process                --显示所有进程
- * ss                       show system message             --显示当前系统信息
-*******************************************************************************/
-```
+   ```c
+   /*****************************************************************************
+    * 命令行输入解析
+    * 命令列表：command (args) (...)
+    * help                     get help                        --获取帮助信息
+    * exit                     shutdown system                 --关闭系统退出程序
+    * cp (size:KB)             creat process                   --创建进程
+    * dp (pid)                 destroy process                 --销毁进程
+    * pa (pid) (size:KB)       process allocate memory         --进程开辟内存
+    * sd (pid)                 store process to disk           --将进程存入磁盘
+    * ld (fileName)            load program from disk          --从磁盘载入程序
+    * sp (pid)                 show process message            --显示进程具体信息
+    * ls                       list all process                --显示所有进程
+    * ss                       show system message             --显示当前系统信息
+   *******************************************************************************/
+   ```
 
-在Windows平台下开为不同情况的输出设置了不同的颜色。
+   在Windows平台下开为不同情况的输出设置了不同的颜色。
+
+
 
 ### 项目概述
 
@@ -126,11 +128,11 @@ struct QueueLite
 /* Memory 代表主存，单例对象，用来描述主存*/
 struct Memory
 {
-    char *memory; // 主存
-    address_type offset; // 用户段的偏移量
-    address_type sys_used; //系统区已使用量
-    address_type user_used;// 用户区已使用量
-    struct QueueLite *mem_queue; //用于存放空闲的页的页号
+    char *memory;                                               // 主存
+    address_type offset;                                        // 用户段的偏移量
+    address_type sys_used;                                      // 系统区已使用量
+    address_type user_used;                                     // 用户区已使用量
+    struct QueueLite *mem_queue;                                // 用于存放空闲的页的页号
 };
 ```
 
@@ -158,9 +160,9 @@ struct Memory
 // 页表
 struct PageTable
 {
-    base_type *table; /* 0--65535 指向页表实体的指针 */
-    base_type size; /* 已使用的最大页表项数，页表项的个数最多1024 */
-    struct QueueLite *queue; // 存放未使用的页号
+    base_type *table;           /* 0--65535 指向页表实体的指针 */
+    base_type size;             /* 已使用的最大页表项数，页表项的个数最多1024 */
+    struct QueueLite *queue;    // 存放未使用的页号
 };
 ```
 
@@ -168,12 +170,11 @@ struct PageTable
 
 ```c
 // PCB
-typedef enum {Ready, Execute, Block, Undefined} CPU_STATUS; // Undefined表示未知
 struct ProcessControlBlock
 {
-    base_type pid;                  // pid==MAX_PID 表示此PCB未被使用，否则代表进程编号
-    CPU_STATUS status;              // 处理机状态 就绪，执行，阻塞，未知
-    struct PageTable *page_table;   // 指向内存中页表的指针
+    base_type pid;                                              // pid==MAX_PID 表示此PCB未被使用，否则代表进程编号
+    CPU_STATUS status;                                          // 处理机状态 就绪，执行，阻塞，未知
+    struct PageTable *page_table;                               // 指向内存中页表的指针
 };
 ```
 
@@ -183,9 +184,9 @@ struct ProcessControlBlock
 // 进程模型
 struct Process
 {
-    struct ProcessControlBlock *pcb; 	// 进程的PCB
-    address_type size; 					// 进程的占用的内存总大小
-    struct TinySystem *sys; 			//系统，单例对象
+    struct ProcessControlBlock *pcb;            // 进程的PCB
+    address_type size;                          // 进程的占用的内存总大小
+    struct TinySystem *sys;                     //系统，单例对象
 };
 ```
 

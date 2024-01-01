@@ -30,10 +30,11 @@
 
 #endif
 
-//是否运行单元测试
+// // 是否运行单元测试
 // #define UNIT_TEST 
 
-// #define MEMORY_NOT_ORDER // 控制页面分配释放错开
+// // 控制页面分配释放错开
+// #define MEMORY_NOT_ORDER 
 
 #ifdef MEMORY_NOT_ORDER // 乱序插入队列
 #define ORDER_MODE TYPE_FALSE
