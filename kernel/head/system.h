@@ -27,8 +27,8 @@ struct TinySystem *creatSystem(bool_type flag);
 // 销毁一个系统
 void destroySystem(struct TinySystem **sys);
 
-// 获取空闲PCB队列
-struct QueueLite *sys_getPCBQueue(const struct TinySystem *sys);
+// 获取空闲PID队列
+struct QueueLite *sys_getPidQueue(const struct TinySystem *sys);
 
 // 获取主存储器句柄
 struct Memory *sys_getMemory(const struct TinySystem *sys);
