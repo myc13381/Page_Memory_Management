@@ -140,7 +140,7 @@ address_type getRealAddr(const struct Process *proc, address_type logicAddr)
 {
     assert(proc != NULL);
     assert(logicAddr < proc->size);
-    base_type numberOfPage = ((logicAddr & (address_type)PART_OF_PAGE_NUMBER) >> 12);        // 逻辑页号
+    base_type numberOfPage = ((logicAddr & (address_type)PART_OF_PAGE_NUMBER) >> (32-LEN_OF_PAGE_NUMBER));        // 逻辑页号
     assert(numberOfPage < getPageTableSize(proc->pcb->page_table));
     address_type offsetInsidPage = logicAddr & PART_OF_PAGE_INSIDE_OFFSET;                      // 页内偏移
     numberOfPage = getValueInPageTable(proc->pcb->page_table, (numberOfPage));                  // 替换为物理页号
