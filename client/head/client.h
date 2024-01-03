@@ -112,7 +112,7 @@ base_type client_loadProcFromDisk(struct TinySystem *sys, struct Process **procL
  * cp (size:KB)             creat process                   --创建进程
  * dp (pid)                 destroy process                 --销毁进程
  * pa (pid) (size:KB)       process allocate memory         --进程开辟内存
- * sd (pid)                 store process to disk           --将进程存入磁盘
+ * sd (pid) (fileName)      store process to disk           --将进程存入磁盘
  * ld (fileName)            load program from disk          --从磁盘载入程序
  * sp (pid)                 show process message            --显示进程具体信息
  * ls                       list all process                --显示所有进程

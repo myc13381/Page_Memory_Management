@@ -257,7 +257,7 @@ void client_help()
     printf("* cp        (size:KB)                   creat process\n");
     printf("* dp        (pid)                       destroy process\n");
     printf("* pa        (pid)       (size:KB)       process allocate memory\n");
-    printf("* sd        (pid)                       store process to disk\n");
+    printf("* sd        (pid)       (fileName)      store process to disk\n");
     printf("* ld        (fileName)                  load program from disk\n");
     printf("* sp        (pid)                       show process message\n");
     printf("* ls                                    list all process\n");
