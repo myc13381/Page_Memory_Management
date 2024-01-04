@@ -16,7 +16,7 @@ typedef enum {Ready, Execute, Block, Undefined} CPU_STATUS;         // Undefined
 struct ProcessControlBlock
 {
     base_type pid;                                              // pid==MAX_PID 表示此PCB未被使用，否则代表进程编号
-    CPU_STATUS status;                                          // 处理机状态 就绪，执行，阻塞，未知
+    CPU_STATUS status;                                          // 处理机状态就绪，执行，阻塞，未知
     struct PageTable *page_table;                               // 指向内存中页表的指针
 };
 
